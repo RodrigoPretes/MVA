@@ -90,9 +90,14 @@ class Queue {
             throughput[0] = 1.0; // Inicialização para evitar divisão por zero
             
             double systemResponseTime = 0.0;
+            double systemUtilization = 0.0;
+            double systemAvgCustomers = 0.0;
             // Loop para calcular as métricas para cada N
             for (int n = 1; n <= numCustomers; n++) {
+                
                 systemResponseTime = 0.0;
+                systemUtilization = 0.0;
+                systemAvgCustomers = 0.0;
     
                 for (Queue queue : queues) {
                     queue.calculateResponseTime(n == 1 ? 0 : queue.getAvgCustomers());
@@ -103,6 +108,8 @@ class Queue {
 
             for (Queue queue : queues) {
                 queue.calculateMetrics(throughput[n]);
+                systemUtilization += queue.getUtilization();
+                systemAvgCustomers += queue.getAvgCustomers();
             }
         }
 
@@ -119,6 +126,8 @@ class Queue {
 
         System.out.println("\n");
         System.out.printf("Tempo médio de resposta total (Ro): %.2f\n", systemResponseTime);
+        System.out.printf("Utilização total do servidor (Uo): %.2f\n", systemUtilization);
+        System.out.printf("Número médio de clientes no sistema (No): %.2f\n", systemAvgCustomers);
 
         scanner.close();
     }
